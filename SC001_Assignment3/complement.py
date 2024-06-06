@@ -13,8 +13,8 @@ Your job is to output the complement of them.
 
 def main():
     """
-    This program will turn 'A' into 'T', 'T' into 'A', 'C' into 'G', and 'G' into 'C'.
-    When DNA is empty, it will show 'DNA strand is missing. '.
+    This program will use string manipulation
+    to find the complement strand of given DNA sequences  .
     """
     print(build_complement('ATC'))
     print(build_complement(''))
@@ -23,27 +23,25 @@ def main():
 
 
 def build_complement(dna):
-    if dna == '':
-        return 'DNA strand is missing. '
+    """
+    :param dna: str, the template used to make a complement ssDNA sequence.
+    :return ans: str, the complement ssDNA sequence.
+    """
+    if len(dna) == 0:
+        return 'DNA strand is missing'
     else:
-        ans=''
-        for i in range(len(dna)):
-            ch = dna[i]
+        ans = ''
+        for ch in dna:
             if ch == 'A':
                 ans += 'T'
             elif ch == 'T':
                 ans += 'A'
             elif ch == 'C':
                 ans += 'G'
-            elif ch == 'G':
+            else:
                 ans += 'C'
         return ans
 
-
-
-
-
-# DO NOT EDIT CODE BELOW THIS LINE #
 
 if __name__ == '__main__':
     main()
