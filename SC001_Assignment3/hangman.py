@@ -70,9 +70,7 @@ def display_word(guess, word, ans):
             else:
                 current_ans += '-'
     return current_ans
-
-
-
+    
 
 def random_word():
     num = random.choice(range(9))
