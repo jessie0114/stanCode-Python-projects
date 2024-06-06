@@ -11,63 +11,51 @@ run in the Assignment 2 Handout.
 """
 
 # This constant controls when to stop
-EXIT = -100
+EXIT = -1
 
 
 def main():
-	"""
-	This program asks weather data from user to compute the average, highest, lowest, cold days among the inputs.
-	"""
-	print('stanCode "Weather Master 4.0"! ')
-	data = int(input('Next Temperature: (or -100 to quit)? '))
-	if data == EXIT:
-		print('No Temperatures were entered.')
+	print('stanCode "Weather Master 4.0"!')
+
+	temp = int(input('Next Temperature: (or ' + str(EXIT) + ' to quit)? '))
+
+	if temp == EXIT:
+		print('No temperatures were entered.')
+
 	else:
-		maximum = data
-		minimum = data
-		total_temperature = data
-		count = 1
-		cold_days = 0
-		if data < 16:
-			cold_days += 1
+		# Initial values for the Weather Master 4.0
+		max_temp = temp
+		min_temp = temp
+		days = 1			# Count how many days there are and will be used to calculate the average temperature
+		total_temp = temp
+
+		# Check if the first temperature is a "cold day"
+		if temp < 16:
+			cold_day = 1
+		else:
+			cold_day = 0
+
 		while True:
-			data = int(input('Next Temperature: (or -100 to quit)? '))
-			if data == EXIT:
+			temp = int(input('Next Temperature: (or ' + str(EXIT) + ' to quit)? '))
+			if temp == EXIT:
 				break
-			maximum = max(maximum, data)
-			minimum = min(minimum, data)
-			total_temperature += data
-			count += 1
-			if data < 16:
-				cold_days += 1
-		average_temperature = total_temperature / count
-		print('Highest temperature: ' + str(maximum))
-		print('Lowest temperature: ' +str(minimum))
-		print('Average : ' + str(average_temperature))
-		print(str(cold_days)+ ' cold day(s)')
+			else:
+				if temp > max_temp:		# Update max_temp when the input temperature is higher than the original value
+					max_temp = temp
+				if temp < min_temp:		# Update min_temp when the input temperature is lower than the original value
+					min_temp = temp
 
+				days += 1  			# Update days
+				total_temp += temp		# Update total temperature
+				if temp < 16:			# Update cold days
+					cold_day += 1
 
+		# Show the results
+		print('Highest temperature = ' + str(max_temp))
+		print('Lowest temperature = ' + str(min_temp))
+		print('Average = ' + str(total_temp / days))
+		print(str(cold_day) + ' cold day(s)')
 
-
-
-		# else:
-		# 	minimum = data
-		# 	while True:
-		# 		data = int(input('Next Temperature: (or -100 to quit)? '))
-		# 		if data == EXIT:
-		# 			break
-		# 		if data < minimum:
-		# 			minimum = data
-		# 	print('Lowest temperature: ' + str(minimum))
-
-
-
-
-
-
-
-
-# DO NOT EDIT CODE BELOW THIS LINE #
 
 if __name__ == "__main__":
 	main()
