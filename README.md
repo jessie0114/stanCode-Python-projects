@@ -9,7 +9,7 @@ This repository holds my programming projects done during the period of stanCode
   * python semantics & syntax
 * [DNA Similarity](https://github.com/jessie0114/stanCode-Python-projects/blob/main/SC001_Assignment3/complement.py)
   * python semantics & syntax
-* [Blur Application]()
+* [Blur Application](https://github.com/jessie0114/stanCode-Python-projects/blob/main/SC001_Assignment4/blur.py)
   * image processing
 * [Breakout Game](https://github.com/jessie0114/stanCode-Python-projects/blob/main/SC101_Assignment2/breakoutgraphics.py)
   * animation & game designing
