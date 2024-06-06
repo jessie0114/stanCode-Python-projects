@@ -74,6 +74,10 @@ def main():
 
 
 def random_word():
+    """
+    To pick a random answer.
+    return: str, the answer picked.
+    """
     num = random.choice(range(9))
     if num == 0:
         return "NOTORIOUS"
