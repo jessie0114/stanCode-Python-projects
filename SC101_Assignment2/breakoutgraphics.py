@@ -4,7 +4,10 @@ Adapted from Eric Roberts's Breakout by
 Sonja Johnson-Yu, Kylie Jue, Nick Bowman, 
 and Jerry Liao.
 
-YOUR DESCRIPTION HERE
+This program executes breakout game. If the user click the
+mouse for the 1st time each round, the game starts. If the
+ball falls to the ground, lives deducts one. The game will
+end if there is no more lives or bricks.
 """
 from campy.graphics.gwindow import GWindow
 from campy.graphics.gobjects import GOval, GRect, GLabel
@@ -26,149 +29,144 @@ MAX_X_SPEED = 5        # Maximum initial horizontal speed for the ball
 
 
 class BreakoutGraphics:
-    def __init__(self, ball_radius=BALL_RADIUS, paddle_width=PADDLE_WIDTH, paddle_height=PADDLE_HEIGHT,
-                 paddle_offset=PADDLE_OFFSET, brick_rows=BRICK_ROWS, brick_cols=BRICK_COLS, brick_width=BRICK_WIDTH,
-                 brick_height=BRICK_HEIGHT, brick_offset=BRICK_OFFSET, brick_spacing=BRICK_SPACING, title='Breakout'):
+    def __init__(self, ball_radius=BALL_RADIUS, paddle_width=PADDLE_WIDTH,
+                 paddle_height=PADDLE_HEIGHT, paddle_offset=PADDLE_OFFSET,
+                 brick_rows=BRICK_ROWS, brick_cols=BRICK_COLS,
+                 brick_width=BRICK_WIDTH, brick_height=BRICK_HEIGHT,
+                 brick_offset=BRICK_OFFSET, brick_spacing=BRICK_SPACING,
+                 title='Breakout'):
 
         # Create a graphical window, with some extra space
-        self.window_width = brick_cols * (brick_width + brick_spacing) - brick_spacing
-        self.window_height = brick_offset + 3 * (brick_rows * (brick_height + brick_spacing) - brick_spacing)
-        self.window = GWindow(width=self.window_width, height=self.window_height, title=title)
+        window_width = brick_cols * (brick_width + brick_spacing) - brick_spacing
+        window_height = brick_offset + 3 * (brick_rows * (brick_height + brick_spacing) - brick_spacing)
+        self.window = GWindow(width=window_width, height=window_height, title=title)
 
         # Create a paddle
-        self.paddle = GRect(width=paddle_width, height=paddle_height)
+        self.paddle = GRect(paddle_width, paddle_height)
         self.paddle.filled = True
-        self.window.add(self.paddle, x=(self.window_width-paddle_width)/2, y=self.window_height-paddle_offset-paddle_height)
+        self.paddle_height = self.window.height - PADDLE_OFFSET
+        self.window.add(self.paddle, (self.window.width - self.paddle.width) / 2, self.window.height - paddle_offset)
 
         # Center a filled ball in the graphical window
-        self.ball = GOval(ball_radius*2, ball_radius*2)
+        self.ball = GOval(ball_radius * 2, ball_radius * 2)
         self.ball.filled = True
-        self.window.add(self.ball, x=self.window_width/2-ball_radius, y=self.window_height/2-ball_radius)
+        self.original_x = self.window.width // 2 - ball_radius
+        self.original_y = self.window.height // 2 - ball_radius
+        self.window.add(self.ball, self.original_x, self.original_y)
 
         # Default initial velocity for the ball
-        self.dx = 0
-        self.dy = 0
-        self.ball_at_origin = True
-        self.game_running = False
+        self.__dx = 0
+        self.__dy = 0
 
         # Initialize our mouse listeners
-        onmouseclicked(self.drop_ball)
-        onmousemoved(self.change_position)
+        onmousemoved(self.paddle_moving)
+        onmouseclicked(self.click)
+
+        # Initialize variables
+        self.count = 0
+        self.brick_number = brick_rows * brick_cols
+        self.starting = False
 
         # Draw bricks
-        for row in range(brick_rows):
-            for col in range(brick_cols):
-                self.brick_x = col * (brick_width+brick_spacing)
-                self.brick_y = brick_offset + row * (brick_height+brick_spacing)
-                self.brick = GRect(width=brick_width, height=brick_height)
-                self.brick.filled = True
-                if row < 2:
-                    self.brick.color = 'Red'
-                    self.brick.fill_color = 'Red'
-                elif 2 <= row <= 3:
-                    self.brick.color = 'Orange'
-                    self.brick.fill_color = 'Orange'
-                elif 4 <= row <= 5:
-                    self.brick.color = 'Yellow'
-                    self.brick.fill_color = 'Yellow'
-                elif 6 <= row <= 7:
-                    self.brick.color = 'Green'
-                    self.brick.fill_color = 'Green'
+        for i in range(brick_cols):
+            for j in range(brick_rows):
+                brick = GRect(brick_width, brick_height, x=(brick_width + brick_spacing) * i,
+                              y=brick_offset + (brick_height + brick_spacing) * j)
+                brick.filled = True
+                if j // 2 == 0:
+                    brick.fill_color = brick.color = 'red'
+                elif j // 2 == 1:
+                    brick.fill_color = brick.color = 'orange'
+                elif j // 2 == 2:
+                    brick.fill_color = brick.color = 'yellow'
+                elif j // 2 == 3:
+                    brick.fill_color = brick.color = 'green'
                 else:
-                    self.brick.color = 'Blue'
-                    self.brick.fill_color = 'Blue'
-                self.window.add(self.brick, x=self.brick_x, y=self.brick_y)
+                    brick.fill_color = brick.color = 'blue'
+                self.window.add(brick)
 
-        # Create score panel
-        self.live = 0
-        self.live_panel = GLabel(f'Lives: {self.live}', x=0, y=self.window.height)
-        self.live_panel.font = 'Calibri-20'
-        self.window.add(self.live_panel)
+    def paddle_moving(self, mouse):
+        """
+        This function has the paddle move with its center following the mouse.
+        :param mouse: the mouse event.
+        :return: None
+        """
+        if self.paddle.width / 2 < mouse.x < self.window.width - self.paddle.width / 2:
+            self.paddle.x = mouse.x - self.paddle.width / 2
+        elif mouse.x < self.paddle.width / 2:  # To prevent the paddle from out-boarding the left side
+            self.paddle.x = 0
+        else:  # To prevent the paddle from out-boarding the right side
+            self.paddle.x = self.window.width - self.paddle.width
 
-    def change_position(self, event):
-        new_x = event.x - PADDLE_WIDTH / 2
-        if new_x < 0:
-            new_x = 0
-        elif new_x > self.window.width - PADDLE_WIDTH:
-            new_x = self.window.width - PADDLE_WIDTH
-        self.paddle.x = new_x
+    def click(self, event):
+        """
+        This function sets the velocity of the ball.
+        :param event: the mouse event.
+        :return: None
+        """
+        if not self.starting:
+            self.starting = True
+            self.__dx = random.randint(1, MAX_X_SPEED)
+            self.__dy = INITIAL_Y_SPEED
+            if random.random() > 0.5:
+                self.__dx = -self.__dx
 
-    def drop_ball(self, event):
-        if self.ball_at_origin and not self.game_running:
-            self.set_ball_velocity()
-            self.game_running = True
+    def hit_ball_or_brick(self):
+        """
+        Detects whether the ball hits the paddle or any bricks.
+        :return: None, This function uses return to end the loops.
+        """
+        for x in range(self.ball.x, self.ball.x+self.ball.width+1, self.ball.width):
+            for y in range(self.ball.y, self.ball.y+self.ball.height+1, self.ball.height):
+                maybe_object = self.window.get_object_at(x, y)
+                if maybe_object is not None:
+                    if maybe_object is self.paddle:
+                        if self.__dy > 0:
+                            self.__dy = -self.__dy
+                    else:
+                        self.window.remove(maybe_object)
+                        self.__dy = -self.__dy
+                        self.brick_number -= 1
+                    return
 
-    def set_ball_velocity(self):
-        self.ball_at_origin = False
-        self.dx = random.randint(1, MAX_X_SPEED)
-        self.dy = INITIAL_Y_SPEED
-        if random.random() > 0.5:
-            self.dx = -self.dx
+    def restart(self):
+        """
+        This function resets the ball to its original position.
+        :return: None
+        """
+        self.ball.x = self.original_x
+        self.ball.y = self.original_y
+        self.__dx = self.__dy = 0
+        self.starting = False
 
-    def update_ball_position(self):
-        if self.game_running:
-            self.ball.move(self.dx, self.dy)
-            # Check for collision with walls
-            if self.ball.y <= 0:
-                self.dy = -self.dy
-            if self.ball.x + self.ball.width >= self.window.width or self.ball.x <= 0:
-                self.dx = -self.dx
-            # Check for collision with paddle
-            if self.ball.y + self.ball.height >= self.paddle.y and self.ball.x + self.ball.width >= self.paddle.x and self.ball.x <= self.paddle.x + self.paddle.width:
-                self.dy = -self.dy
-            # Check for collision with bricks
-            self.check_collisions()
-            # Reset ball if it goes below the paddle -> Write in main function
+    def get_dx(self):
+        """
+        Getter of dx.
+        :return self.__dx: the value of private variable dx.
+        """
+        return self.__dx
 
-    def game_over(self):
-        game_over_label = GLabel('Game Over')
-        game_over_label.font = 'Calibri-40'
-        game_over_label.color = 'red'
-        self.window.add(game_over_label, (self.window.width - game_over_label.width) / 2, self.window.height / 2)
-        onmouseclicked(None)
+    def get_dy(self):
+        """
+        Getter of dy.
+        :return self.__dy: the value of private variable dy.
+        """
+        return self.__dy
 
-    def check_collisions(self):
-        for dx in [0, self.ball.width]:
-            for dy in [0, self.ball.height]:
-                corner_x = self.ball.x + dx
-                corner_y = self.ball.y + dy
-                obj = self.window.get_object_at(corner_x, corner_y)
-                if obj is not None:
-                    if obj is self.paddle:
-                        if self.dy > 0:
-                            self.dy = -self.dy
-                    elif obj is not self.ball and obj is not self.live_panel:
-                        self.window.remove(obj)
-                        self.dy = -self.dy
-                        if not self.has_bricks_left():
-                            self.win_game()
-                        return
+    def set_dx(self, new_dx):
+        """
+        Setter function to update dx and bounce the ball.
+        :param new_dx: the new dx value passed from the server side to the coder side.
+        :return: None, this function does not return anything.
+        """
+        self.__dx = new_dx
 
-    def reset_ball(self):
-        self.ball.x = self.window_width / 2 - BALL_RADIUS
-        self.ball.y = self.window_height / 2 - BALL_RADIUS
-        self.dx = 0
-        self.dy = 0
-        self.ball_at_origin = True
-        self.game_running = False
+    def set_dy(self, new_dy):
+        """
+        Setter function to update dy and bounce the ball.
+        :param new_dy: the new dy value passed from the server side to the coder side.
+        :return: None, this function does not return anything.
+        """
+        self.__dy = new_dy
 
-    def set_live(self, live):
-        self.live = live
-        self.live_panel.text = f'Lives: {self.live}'
 
-    def has_bricks_left(self):
-        for row in range(BRICK_ROWS):
-            for col in range(BRICK_COLS):
-                brick_x = col * (BRICK_WIDTH + BRICK_SPACING)
-                brick_y = BRICK_OFFSET + row * (BRICK_HEIGHT + BRICK_SPACING)
-                if self.window.get_object_at(brick_x, brick_y) is not None:
-                    return True
-        return False
-
-    def win_game(self):
-        win_label = GLabel('You Win!')
-        win_label.font = 'Calibri-40'
-        win_label.color = 'green'
-        self.window.add(win_label, (self.window.width - win_label.width) / 2, self.window.height / 2)
-        self.game_running = False
-        onmouseclicked(None)
