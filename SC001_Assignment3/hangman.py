@@ -21,56 +21,57 @@ N_TURNS = 7
 
 def main():
     """
-    This program tries to figure the un-dashed word out.
+    This program will randomly come up with a vocabulary,
+    and the user can pick either one of the 26 alphabets for a guess.
+    If the alphabet you pick is in the vocabulary, this program will
+    show you the relative position(s) of the alphabet. If not,
+    you lose one guess.(You have N_TURNS guesses.)
+    The game ends either you guess all the alphabets right(win) or used up all 7 guesses(lose.)
     """
-    lives = N_TURNS
-    word = random_word()
-    ans = '-'*len(word)
-    print('The word looks like: '+ ans)
-    print('You have ' + str(lives) + ' wrong guess left. ')
-    while lives > 0:
+    ans = random_word()     # Get a random answer
+    n_turns = N_TURNS       # The chances left for the player to guess
+
+    dashed_ans = ''         # Cover the answer with dashes('-')
+    for i in range(len(ans)):
+        dashed_ans += '-'
+
+    print('The word looks like: ' + dashed_ans)
+    print('You have ' + str(n_turns) + ' wrong guesses left.')
+
+    while True:
         guess = input('Your guess: ').upper()
-        if guess.isalpha():
-            ans = display_word(guess, word, ans)
-        else:
+
+        if not guess.isalpha() or len(guess) != 1:  # Check if correct format
             print('Illegal format.')
-        if '-' not in ans:
-            break
-        elif guess not in word:
-            lives -= 1
-            if lives == 0:
-                break
-            else:
-                print('There is no ',guess, "'s in the word. ")
-                print('The word looks like: ' + ans)
-                print('You have '+ str(lives) + ' wrong guess left. ')
-        elif guess in word:
-            print('You are correct! ')
-            print('The word looks like: ' + ans)
-            print('You have ' + str(lives) + ' wrong guess left. ')
-
-    if lives == 0:
-        print('There is no ', guess, "'s in the word. ")
-        print('You are completely hung :(\nThe answer is: ', word)
-    else:
-        print('You are correct! ')
-        print('You win!!')
-        print('The answer is:', word)
-
-
-def display_word(guess, word, ans):
-    current_ans = ''
-    for i in range(len(word)):
-        letter = word[i]
-        if letter == ans[i]:
-            current_ans += letter
         else:
-            if letter == guess:
-                current_ans += letter
+            if guess in ans:    # To see if the guess is right
+                print('You are correct!')
+                new_dashed_ans = ''     # Used to update the dashed_ans
+                for i in range(len(dashed_ans)):
+                    if ans[i] == guess:
+                        new_dashed_ans += guess
+                    else:
+                        new_dashed_ans += dashed_ans[i]
+
+                dashed_ans = new_dashed_ans     # Update dashed_ans
             else:
-                current_ans += '-'
-    return current_ans
-    
+                # Update n_turns
+                n_turns -= 1
+                print('There is no ' + guess + '\'s in the word.')
+
+            # Check if to end the game
+            if n_turns == 0:
+                print('You are completely hung :(')
+                break
+            if '-' not in dashed_ans:
+                print('You win!!')
+                break
+
+            print('The word looks like: ' + dashed_ans)
+            print('You have ' + str(n_turns) + ' wrong guesses left.')
+
+    print('The answer is: ' + ans)
+
 
 def random_word():
     num = random.choice(range(9))
