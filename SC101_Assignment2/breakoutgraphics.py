@@ -1,4 +1,7 @@
 """
+File: breakoutgraphics.py
+Name: Jessie
+-----------------------------
 stanCode Breakout Project
 Adapted from Eric Roberts's Breakout by
 Sonja Johnson-Yu, Kylie Jue, Nick Bowman, 
@@ -14,18 +17,18 @@ from campy.graphics.gobjects import GOval, GRect, GLabel
 from campy.gui.events.mouse import onmouseclicked, onmousemoved
 import random
 
-BRICK_SPACING = 5      # Space between bricks (in pixels). This space is used for horizontal and vertical spacing
-BRICK_WIDTH = 40       # Width of a brick (in pixels)
-BRICK_HEIGHT = 15      # Height of a brick (in pixels)
-BRICK_ROWS = 10        # Number of rows of bricks
-BRICK_COLS = 10        # Number of columns of bricks
+BRICK_SPACING = 5
+BRICK_WIDTH = 40
+BRICK_HEIGHT = 15
+BRICK_ROWS = 10
+BRICK_COLS = 10
 BRICK_OFFSET = 50      # Vertical offset of the topmost brick from the window top (in pixels)
-BALL_RADIUS = 10       # Radius of the ball (in pixels)
-PADDLE_WIDTH = 75      # Width of the paddle (in pixels)
-PADDLE_HEIGHT = 15     # Height of the paddle (in pixels)
+BALL_RADIUS = 10
+PADDLE_WIDTH = 75
+PADDLE_HEIGHT = 15
 PADDLE_OFFSET = 50     # Vertical offset of the paddle from the window bottom (in pixels)
-INITIAL_Y_SPEED = 7    # Initial vertical speed for the ball
-MAX_X_SPEED = 5        # Maximum initial horizontal speed for the ball
+INITIAL_Y_SPEED = 7
+MAX_X_SPEED = 5
 
 
 class BreakoutGraphics:
