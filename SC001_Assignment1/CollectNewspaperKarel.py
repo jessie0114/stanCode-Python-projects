@@ -14,34 +14,43 @@ from karel.stanfordkarel import *
 
 def main():
     """
-    Karel picks up the newspaper.
+    pre-condition: Karel is at the upper left corner of its house.
+    post-condition: Karel is at the upper left corner of its house with a beeper.
+
+    This program is decomposed of two function, for the purpose of moving out to
+    collect the newspaper, which is represented by a beeper, and returning to its
+    initial position putting down the newspaper.
     """
-    go_out()
-    go_in()
+    move_out_and_pick()
+    go_home_and_put()
 
 
-def go_out():
+def move_out_and_pick():
     """
-    pre-condition: Karel is in the upper left corner of the house, facing East.
-    post-condition: Karel is on the beeper, facing East.
+    pre-condition: Karel is at the upper left corner of its house.
+    post-condition: Karel stands at where the newspaper is and pick up the newspaper.
+
+    The purpose of this function is to let Karel move out and go collect the newspaper,
+    which is represented by a beeper.
     """
-    while front_is_clear():
-        move()
     turn_right()
     move()
     turn_left()
-    move()
-
-
-def go_in():
-    """
-    pre-condition: Karel is on the beeper, facing East.
-    post-condition: Karel is in the upper left corner of the house, facing East.
-    """
+    for i in range(3):
+        move()
     pick_beeper()
-    turn_left()
-    turn_left()
-    while front_is_clear():
+
+
+def go_home_and_put():
+    """
+    pre-condition: Karel is at where the newspaper is, carrying a beeper with it.
+    post-condition: Karel is at the upper left corner of its house with a beeper put down.
+
+    After collecting the newspaper, Karel returning to its initial position and put down
+    the newspaper that it just collected.
+    """
+    turn_around()
+    for i in range(3):
         move()
     turn_right()
     move()
@@ -49,13 +58,21 @@ def go_in():
     put_beeper()
 
 
+def turn_around():
+    """
+    Karel make a 180 degrees turn.
+    """
+    turn_left()
+    turn_left()
+
+
 def turn_right():
-    turn_left()
-    turn_left()
-    turn_left()
-
-
-# DO NOT EDIT CODE BELOW THIS LINE #
+    """
+    Karel turns to its right side.
+    """
+    for i in range(3):
+        turn_left()
+        
 
 if __name__ == '__main__':
     execute_karel_task(main)
