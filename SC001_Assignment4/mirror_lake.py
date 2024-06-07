@@ -12,8 +12,10 @@ from simpleimage import SimpleImage
 
 def reflect(filename):
     """
-    :param filename:str, the file path of the original image (with respect to current directory)
-    :return:SimpleImage, the image with mirror lake.
+    :param filename: str, Import image path
+    :return new_img: SimpleImage, Export Mirror image
+    Function: Mirror the original picture downward
+    Principle: Symmetrically copy the RGB value of the original picture to achieve the mirror effect
     """
     original_mt = SimpleImage('images/mt-rainier.jpg')
     original_mt.show()
@@ -40,7 +42,8 @@ def reflect(filename):
 
 def main():
     """
-    This program will mirror the lake under the original picture.
+    Function: Mirror the original picture downward
+    Principle: Display the original picture and the mirror picture
     """
     original_mt = SimpleImage('images/mt-rainier.jpg')
     original_mt.show()
