@@ -14,7 +14,7 @@ Your job is to output the complement of them.
 def main():
     """
     This program will use string manipulation
-    to find the complement strand of given DNA sequences  .
+    to find the complement strand of given DNA sequences.
     """
     print(build_complement('ATC'))
     print(build_complement(''))
@@ -27,18 +27,19 @@ def build_complement(dna):
     :param dna: str, the template used to make a complement ssDNA sequence.
     :return ans: str, the complement ssDNA sequence.
     """
-    if len(dna) == 0:
-        return 'DNA strand is missing'
+    if dna == '':
+        return 'DNA strand is missing. '
     else:
-        ans = ''
-        for ch in dna:
+        ans=''
+        for i in range(len(dna)):
+            ch = dna[i]
             if ch == 'A':
                 ans += 'T'
             elif ch == 'T':
                 ans += 'A'
             elif ch == 'C':
                 ans += 'G'
-            else:
+            elif ch == 'G':
                 ans += 'C'
         return ans
 
