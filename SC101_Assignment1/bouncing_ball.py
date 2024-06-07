@@ -45,6 +45,11 @@ def main():
 ball_at_origin = True
 
 def drop_ball(event):
+    """
+    This function starts the bouncing process if the mouse
+    is clicked for the 1st time and the process is executed
+    less than or equal three times.
+    """
     global bounces, ball_at_origin
     if ball_at_origin and bounces < MAX_BOUNCES:
         animate_ball()
@@ -60,6 +65,9 @@ def reset_ball():
 
 
 def animate_ball():
+    """
+    This function stimulates the bouncing process of the ball.
+    """
     global vx, vy, bounces, ball_at_origin
     ball_at_origin = False
     while True:
