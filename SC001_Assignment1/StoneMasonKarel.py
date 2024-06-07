@@ -15,58 +15,78 @@ from karel.stanfordkarel import *
 
 def main():
     """
-    Karel fills in the pillar.
+    pre-condition: Karel is at the lower left corner of the world, and there are
+                   several broken pillars that are needed to be repaired.
+    post-condition: Karel is at the lower right corner of world, facing east, and
+                    the pillars have been repaired.
+
+    This program makes Karel to repair all the broken pillars in the world, with three
+    steps, which is represented by three functions.
     """
     while front_is_clear():
-        up()
-        move()
-        move()
-        move()
-        move()
-        down()
+        climb_up_and_repair()
+        go_back()
+        cross()
+    climb_up_and_repair()  # prevent the OBOB error
+    go_back()
 
 
-def up():
+def climb_up_and_repair():
     """
-    pre-condition: Karel is at the bottom of pillar, facing east.
-    post-condition: Karel is at the top of pillar, facing east.
+    pre-condition: Karel is at the bottom of a broken pillar, facing east.
+    post-condition: Karel is at the top of a pillar which is just repaired.
+
+    Karel climbs up the pillar, and repair with beepers.
     """
     turn_left()
     while front_is_clear():
-        if on_beeper():
-            move()
-        else:
-            put_beeper()
-            move()
-    if on_beeper():
-        turn_right()
-    else:
+        put_beeper_safely()
+        move()
+    put_beeper_safely()  # prevent the OBOB error
+
+
+def go_back():
+    """
+    pre-condition: Karel is at the top of a pillar which is just repaired.
+    post-condition: Karel is at the bottom of a pillar which is just repaired,
+                    facing east.
+
+    After fixing a pillar, Karel climbs down the pillar, turns to the its left
+    side, is ready to move to another pillar.
+    """
+    turn_around()
+    while front_is_clear():
+        move()
+    turn_left()
+
+
+def cross():
+    """
+    pre-condition: Karel is at the bottom of a pillar which is just repaired.
+    post-condition: Karel is at the bottom of another broken pillar.
+
+    Karel moves four steps to arrive the bottom of another broken pillar, facing east.
+    """
+    for i in range(4):
+        move()
+
+
+def put_beeper_safely():
+    """
+    In order to prevent that there are more than one beepers at a position, check whether
+    there is a beeper before putting down one.
+    """
+    if not on_beeper():
         put_beeper()
-        turn_right()
 
 
-def down():
+def turn_around():
     """
-    pre-condition: Karel is at the top of pillar, facing east.
-    post-condition: Karel is at the bottom of pillar, facing east.
+    Karel makes a 180 degrees turn.
     """
-    turn_right()
-    while front_is_clear():
-        if on_beeper():
-            move()
-        else:
-            put_beeper()
-            move()
-    turn_left()
-
-
-def turn_right():
     turn_left()
     turn_left()
-    turn_left()
-
-
-# DO NOT EDIT CODE BELOW THIS LINE #
+    
 
 if __name__ == '__main__':
     execute_karel_task(main)
