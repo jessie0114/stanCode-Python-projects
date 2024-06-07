@@ -21,22 +21,18 @@ def main():
 
 def my_hailstone(n):
     steps = 0
-    while n != 1:
-        print(n, end = '')
-        if n % 2 == 0:
+    while True:
+        if n == 1:        # Check if to finish processing
+            break
+        if n % 2 == 0:   #even
             n = n // 2
             print(' is even, so I take half: ', n)
-        else:
+        else:             #odd
             n = 3 * n + 1
             print(' is odd, so I make 3n+1: ', n)
         steps += 1
     print('It took',  steps, 'steps to reach 1.')
 
-
-
-
-
-# DO NOT EDIT CODE BELOW THIS LINE #
 
 if __name__ == "__main__":
     main()
