@@ -31,6 +31,10 @@ def main():
 
 
 def is_prime(n):
+	"""
+	: param n: int, an integer that is greater than 1
+	: return : bool, True if n is a prime number; False if n is not a prime number
+	"""
 	if n <= 1:
 		result = False
 	i = 2
@@ -42,13 +46,6 @@ def is_prime(n):
 		i += 1
 	return result
 
-
-
-
-
-
-
-# DO NOT EDIT CODE BELOW THIS LINE #
 
 if __name__ == "__main__":
 	main()
