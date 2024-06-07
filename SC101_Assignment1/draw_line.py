@@ -16,7 +16,7 @@ window = GWindow()
 click_count = 0
 start_x = 0
 start_y = 0
-circle = None
+circle = None  # The hollow circle indicating the first click.
 
 def main():
     """
@@ -27,7 +27,13 @@ def main():
     """
     onmouseclicked(draw)
 
+
 def draw(event):
+    """
+    This function draws a hollow circle centered the mouse at odd
+    click, and it draws a line starting with the odd click mouse
+    and ending with the next click mouse at even click.
+    """
     global click_count, circle, start_x, start_y
     if click_count % 2 == 0:
         if circle is not None:
