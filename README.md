@@ -9,7 +9,7 @@ This repository holds my programming projects done during the period of stanCode
   * python semantics & syntax
 * [Caesar Cipher](https://github.com/jessie0114/stanCode-Python-projects/blob/main/SC001_Assignment3/caesar.py)
   * python semantics & syntax
-* [Fire Detection](https://github.com/jessie0114/stanCode-Python-projects/blob/main/SC001_Assignment4/blur.py)
+* [Fire Detection](https://github.com/jessie0114/stanCode-Python-projects/blob/main/SC001_Assignment4/fire.py)
   * image processing
 * [Breakout Game](https://github.com/jessie0114/stanCode-Python-projects/blob/main/SC101_Assignment2/breakoutgraphics.py)
   * animation & game designing
