@@ -16,121 +16,85 @@ from karel.stanfordkarel import *
 
 def main():
     """
-    Karel will find midpoint.
+    pre-condition: Karel is at the lower left corner of a square world.
+    post-condition: Karel stands at the midpoint of street 1 with a beeper.
+
+    The purpose of this program is finding the midpoint of street 1 in any
+    square world. In order to reach the goal, there are two procedures.
+    First, put two beepers on the two ends of street respectively as two
+    boundaries that remind Karel that it should turn around. Later, everytime
+    Karel encounters a beeper, then it will turn around, pick it up, move a
+    step toward to the midpoint, put it down, and move until it arrives the
+    other beeper. By doing the procedures mentioned above repeatedly, Karel
+    will find the midpoint when the two beepers meet each other.
     """
-    if not front_is_clear():
-        put_beeper()
-    else:
-        fill_a_line()
-        turn_arround()
-        while front_is_clear():
-            move()
-        turn_arround()
-        fill_b_line()
-        turn_arround()
-        while front_is_clear():
-            move()
-        turn_arround()
-        pick_one_beeper()
-        Karel_goes_to_midpoint()
+    put_on_head_and_tail()
+    find_midpoint()
 
 
-def Karel_goes_to_midpoint():
+def put_on_head_and_tail():
     """
-    pre-condition: Karel is at upper left, facing west.
-    post-condition: Karel is at midpoint, facing south.
-    """
-    turn_arround()
-    while not on_beeper():
-        move()
-        turn_right()
-        move()
-        turn_left()
-    pick_beeper()
-    turn_right()
-    while front_is_clear():
-        move()
-    put_beeper()
+    pre-condition: Karel is at the lower left corner of a world.
+    post-condition: There are two beepers on the two ends of street 1 respectively,
+                     and Karel stands on the right beeper.
 
-
-def fill_a_line():
-    """
-    pre-condition:Karel is at lower left, facing east.
-    post-condition:Karel is at upper right, facing east.
+    In order to approach the midpoint, we should set two boundaries in advance, which
+    reminds Karel that it should turn around. The two boundaries are represented by
+    two beepers.
     """
     put_beeper()
     while front_is_clear():
         move()
-        turn_left()
-        move()
-        put_beeper()
-        turn_right()
+    put_beeper_safely()  # for 1x1 world
+    turn_around()
 
 
-def fill_b_line():
+def find_midpoint():
     """
-    pre-condition: Karel is at upper left, facing east.
-    post-condition: Karel is at lower right, facing east.
-    """
-    put_beeper()
-    while front_is_clear():
-        move()
-        turn_right()
-        move()
-        put_beeper()
-        turn_left()
+    pre-condition: Karel stands on the right beeper.
+    post-condition: Karel stands on the midpoint of street 1 with a beeper.
 
-
-def clean_a_line():
+    Everytime Karel encounters a beeper, it will turn around, pick it up,
+    move a step forward, put it down, and move to the other beeper. By
+    repeating the procedures above, the two beeper will meet each other
+    eventually, and the position at that time is the midpoint that we are
+    looking for.
     """
-    pre-condition: Karel is at lower right, facing west.
-    post-condition: Karel is at lower left, facing west.
-    """
-    while front_is_clear():
-        if on_beeper():
-            pick_beeper()
-            move()
-        else:
-            move()
-    if on_beeper():
+    if front_is_clear():  # for 1x1 world
         pick_beeper()
-        turn_arround()
-    else:
-        turn_arround()
-    while front_is_clear():
         move()
-
-
-
-def pick_one_beeper():
-    """
-    pre-condition: Karel is at lower right, facing west.
-    post-condition: Karel is at upper left, facing west.
-    """
-    while front_is_clear():
-        clean_a_line()
-        if right_is_clear():
-            turn_right()
+        put_beeper_safely()  # for 2x2 world
+        if front_is_clear():
             move()
-            turn_right()
+        while not on_beeper():  # move to the other beeper
+            move()
+            if on_beeper():
+                turn_around()
+                pick_beeper()
+                move()
+                put_beeper_safely()
+                move()
+        pick_beeper()  # remove the redundant beeper
+        turn_around()
+        move()
+        put_beeper_safely()  # stand on the midpoint with a beeper
 
 
-
-def turn_arround():
+def turn_around():
+    """
+    Karel makes a 180 degrees turn.
+    """
     turn_left()
     turn_left()
 
 
-def turn_right():
-    turn_left()
-    turn_left()
-    turn_left()
-
-
-
-
-# DO NOT EDIT CODE BELOW THIS LINE #
-
+def put_beeper_safely():
+    """
+    Check if there has been a beeper before putting one.
+    """
+    if not on_beeper():
+        put_beeper()
+        
 
 if __name__ == '__main__':
     execute_karel_task(main)
