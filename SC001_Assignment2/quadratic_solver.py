@@ -23,21 +23,17 @@ def main():
 	b = int(input('Enter b: '))
 	c = int(input('Enter c: '))
 	x = b*b-4*a*c
-	if x > 0:
+	if x > 0:                         # 2 roots
 		y = math.sqrt(x)
 		d = (-b + y) / (2 * a)
 		e = (-b - y) / (2 * a)
 		print('Two roots: '+str(d)+ ', ' +str(e))
-	elif x == 0:
+	elif x == 0:                      # 1 root
 		f = -b / (2 * a)
 		print('One root: '+str(f))
 	else:
 		print('No real roots')
 
-
-
-
-# DO NOT EDIT CODE BELOW THIS LINE #
 
 if __name__ == "__main__":
 	main()
